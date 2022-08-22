@@ -41,6 +41,7 @@ INSTALLED_APPS = [
     'rest_framework_simplejwt',
     'asosiy',
     'userapp',
+    'stats',
     'drf_yasg',
 ]
 

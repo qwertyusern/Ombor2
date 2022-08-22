@@ -13,7 +13,7 @@ from rest_framework_simplejwt.views import (
 
 router=DefaultRouter()
 router.register("mahsulot", MahsulotVs)
-router.register("ombor", OmborVs)
+
 
 schema_view = get_schema_view(
    openapi.Info(
@@ -30,6 +30,9 @@ urlpatterns = [
     path('', include(router.urls)),
     path('doc/',schema_view.with_ui('swagger', cache_timeout=0), name='swagger-doc'),
     path('clientlar/', Clientlar.as_view()),
+    path('stats/', StatsView.as_view()),
+    path('stat/<int:pk>', StatsV.as_view()),
+    path('ombor/<int:pk>', OmborGet.as_view()),
     path('client/<int:pk>', ClientV.as_view()),
     path('userlar/', Userlar.as_view()),
     path('user/<int:pk>', UserV.as_view()),

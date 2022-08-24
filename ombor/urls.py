@@ -5,6 +5,7 @@ from drf_yasg.views import get_schema_view
 from rest_framework import permissions
 from rest_framework.routers import DefaultRouter
 from asosiy.views import *
+from stats.views import *
 from userapp.views import *
 from rest_framework_simplejwt.views import (
     TokenObtainPairView,

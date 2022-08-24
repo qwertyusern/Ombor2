@@ -13,7 +13,21 @@ class MahsulotVs(ModelViewSet):
         if Ombor.user==self.request.user:
             o = Mahsulot.objects.all()
         else:
-            return Response("doc/")
+            return Response()
+    def post(self, request):
+        if Ombor.user==self.request.user:
+            ser = MahsulotSer(data=request.data)
+            if ser.is_valid():
+                ser.save()
+            return Response(ser.data)
+        return Response()
+    def perform_update(self, serializer):
+        if Ombor.user==self.request.user:
+            serializer = MahsulotSer(data=self.request.data)
+            if serializer.is_valid():
+                serializer.save()
+            return Response(serializer.data)
+        return Response()
 class Clientlar(generics.ListCreateAPIView):
     queryset=Client.objects.all()
     serializer_class = ClientSer
@@ -21,7 +35,14 @@ class Clientlar(generics.ListCreateAPIView):
         if Ombor.user==self.request.user:
             o = Client.objects.all()
         else:
-            return Response("doc/")
+            return Response()
+    def post(self, request):
+        if Ombor.user==self.request.user:
+            ser = ClientSer(data=self.request.data)
+            if ser.is_valid():
+                ser.save()
+            return Response(ser.data)
+        return Response()
 class ClientV(generics.RetrieveUpdateDestroyAPIView):
     queryset = Client.objects.all()
     serializer_class =ClientSer
@@ -29,4 +50,11 @@ class ClientV(generics.RetrieveUpdateDestroyAPIView):
         if Ombor.user==self.request.user:
             o = Client.objects.get(user=self.request.user)
         else:
-            return Response("doc/")
+            return Response()
+    def perform_update(self, serializer):
+        if Ombor.user==self.request.user:
+            serializer = ClientSer(data=self.request.data)
+            if serializer.is_valid():
+                serializer.save()
+            return Response(serializer.data)
+        return Response()

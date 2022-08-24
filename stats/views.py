@@ -15,7 +15,14 @@ class StatsView(generics.ListCreateAPIView):
         if Ombor.user==self.request.user:
             o = Stats.objects.all()
         else:
-            return Response("doc/")
+            return Response()
+    def post(self, request):
+        if Ombor.user==self.request.user:
+            ser = StatsSer(data=request.data)
+            if ser.is_valid():
+                ser.save()
+            return Response(ser.data)
+        return Response()
 class StatsV(generics.RetrieveUpdateDestroyAPIView):
     queryset = Stats.objects.all()
     serializer_class =StatsSer
@@ -23,5 +30,12 @@ class StatsV(generics.RetrieveUpdateDestroyAPIView):
         if Ombor.user==self.request.user:
             o = Stats.objects.get(user=self.request.user)
         else:
-            return Response("doc/")
+            return Response()
+    def perform_update(self, serializer):
+        if Ombor.user==self.request.user:
+            serializer = StatsSer(data=self.request.data)
+            if serializer.is_valid():
+                serializer.save()
+            return Response(serializer.data)
+        return Response()
 

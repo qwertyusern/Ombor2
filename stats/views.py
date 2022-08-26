@@ -12,13 +12,16 @@ class StatsView(generics.ListCreateAPIView):
     search_fields = ["mahsulot", "client","sana"]
     ordening_fields = ["sana"]
     def get_queryset(self):
-        if Ombor.user==self.request.user:
-            o = Stats.objects.all()
+        o=Ombor.objects.get(user=self.request.user)
+        if o.user==self.request.user:
+            Stats.objects.filter(ombor=o)
         else:
             return Response()
     def post(self, request):
-        if Ombor.user==self.request.user:
-            ser = StatsSer(data=request.data)
+        o = Ombor.objects.get(user=self.request.user)
+        if o.user==self.request.user:
+            s=Stats.objects.create()
+            ser = StatsSer(s,data=request.data)
             if ser.is_valid():
                 ser.save()
             return Response(ser.data)
@@ -26,14 +29,17 @@ class StatsView(generics.ListCreateAPIView):
 class StatsV(generics.RetrieveUpdateDestroyAPIView):
     queryset = Stats.objects.all()
     serializer_class =StatsSer
-    def get_queryset(self):
-        if Ombor.user==self.request.user:
-            o = Stats.objects.get(user=self.request.user)
+    def retrieve(self,request,pk):
+        o = Ombor.objects.get(user=self.request.user)
+        if o.user==self.request.user:
+            Stats.objects.get(id=pk)
         else:
             return Response()
-    def perform_update(self, serializer):
-        if Ombor.user==self.request.user:
-            serializer = StatsSer(data=self.request.data)
+    def update(self, request,pk):
+        o = Ombor.objects.get(user=self.request.user)
+        if o.user==self.request.user:
+            s=Stats.objects.update(id=pk)
+            serializer = StatsSer(s,data=self.request.data)
             if serializer.is_valid():
                 serializer.save()
             return Response(serializer.data)

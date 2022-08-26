@@ -13,11 +13,12 @@ from userapp.models import *
 class OmborGet(generics.RetrieveAPIView):
     queryset = Ombor.objects.all()
     s=OmborSer
-    def get_queryset(self):
-        if Ombor.user==self.request.user:
-            o = Ombor.objects.get(user=self.request.user)
+    def retrieve(self, request,pk):
+        o = Ombor.objects.get(user=self.request.user)
+        if o.user==self.request.user:
+            Ombor.objects.get(id=pk)
         else:
-            return Response("doc/")
+            return Response()
 
 class Userlar(generics.CreateAPIView):
     queryset=User.objects.all()

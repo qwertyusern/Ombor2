@@ -27,7 +27,7 @@ class MahsulotVs(ModelViewSet):
     def update(self, request, pk):
         o = Ombor.objects.get(user=self.request.user)
         if o.user==self.request.user:
-            m = Mahsulot.objects.update(id=pk)
+            m = Mahsulot.objects.get(id=pk).update()
             ser = MahsulotSer(m,data=self.request.data)
             if ser.is_valid():
                 ser.save()
@@ -63,7 +63,7 @@ class ClientV(generics.RetrieveUpdateDestroyAPIView):
     def update(self, request,pk):
         o = Ombor.objects.get(user=self.request.user)
         if o.user==self.request.user:
-            c=Client.objects.update(id=pk)
+            c=Client.objects.get(id=pk).update()
             serializer = ClientSer(c,data=self.request.data)
             if serializer.is_valid():
                 serializer.save()

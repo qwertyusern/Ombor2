@@ -38,7 +38,7 @@ class StatsV(generics.RetrieveUpdateDestroyAPIView):
     def update(self, request,pk):
         o = Ombor.objects.get(user=self.request.user)
         if o.user==self.request.user:
-            s=Stats.objects.update(id=pk)
+            s=Stats.objects.get(id=pk).update()
             serializer = StatsSer(s,data=self.request.data)
             if serializer.is_valid():
                 serializer.save()

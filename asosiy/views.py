@@ -22,7 +22,7 @@ class MahsulotApiView(APIView):
         return Response(ser.data)
 class MahsulotApi(APIView):
     def put(self, request, pk):
-        o = Ombor.objects.get(username=request.user)
+        o = Ombor.objects.get(user=request.user)
         mahsulot = Mahsulot.objects.get(id=pk)
         if mahsulot.ombor == o:
             malumot=request.data
@@ -51,7 +51,7 @@ class ClientApi(APIView):
         ser=ClientSer(c)
         return Response(ser.data)
     def put(self, request,pk):
-        o = Ombor.objects.get(username=request.user)
+        o = Ombor.objects.get(user=request.user)
         client = Client.objects.get(id=pk)
         if client.ombor == o:
             malumot = request.data

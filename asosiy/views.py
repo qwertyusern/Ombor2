@@ -1,71 +1,62 @@
 from rest_framework import generics
 from rest_framework.response import Response
+from rest_framework.views import APIView
 from rest_framework.viewsets import ModelViewSet
 from .models import *
 from userapp.models import Ombor
 from .serializers import *
 
 
-class MahsulotVs(ModelViewSet):
-    queryset = Mahsulot.objects.all()
-    s=MahsulotSer
-    def get_queryset(self):
-        o=Ombor.objects.get(user=self.request.user)
-        if o.user==self.request.user:
-            Mahsulot.objects.filter(ombor=o)
-        else:
-            return Response()
+class MahsulotApiView(APIView):
+    def get(self,request):
+        o=Ombor.objects.get(user=request.user)
+        m=Mahsulot.objects.filter(ombor=o)
+        ser=MahsulotSer(m,many=True)
+        return Response(ser.data)
     def post(self, request):
-        o = Ombor.objects.get(user=self.request.user)
-        if o.user==self.request.user:
-            m=Mahsulot.objects.create()
-            ser = MahsulotSer(m,data=request.data)
+        malumot=request.data
+        ser = MahsulotSer(data=malumot)
+        if ser.is_valid():
+            o = Ombor.objects.get(user=request.user)
+            ser.save(ombor=o)
+        return Response(ser.data)
+class MahsulotApi(APIView):
+    def put(self, request, pk):
+        o = Ombor.objects.get(username=request.user)
+        mahsulot = Mahsulot.objects.get(id=pk)
+        if mahsulot.ombor == o:
+            malumot=request.data
+            ser = MahsulotSer(data=malumot)
             if ser.is_valid():
-                ser.save()
+                ser.save(ombor=o)
             return Response(ser.data)
         return Response()
-    def update(self, request, pk):
-        o = Ombor.objects.get(user=self.request.user)
-        if o.user==self.request.user:
-            m = Mahsulot.objects.get(id=pk).update()
-            ser = MahsulotSer(m,data=self.request.data)
-            if ser.is_valid():
-                ser.save()
-            return Response(ser.data)
-        return Response()
-class Clientlar(generics.ListCreateAPIView):
-    queryset=Client.objects.all()
-    serializer_class = ClientSer
-    def get_queryset(self):
-        o = Ombor.objects.get(user=self.request.user)
-        if o.user==self.request.user:
-            Client.objects.filter(ombor=o)
-        else:
-            return Response()
+class ClientApiView(APIView):
+    def get(self,request):
+        o = Ombor.objects.get(user=request.user)
+        c=Client.objects.filter(ombor=o)
+        ser = ClientSer(c, many=True)
+        return Response(ser.data)
     def post(self, request):
-        o = Ombor.objects.get(user=self.request.user)
-        if o.user==self.request.user:
-            c = Client.objects.create()
-            ser = ClientSer(c,data=self.request.data)
+        malumot = request.data
+        ser = ClientSer(data=malumot)
+        if ser.is_valid():
+            o = Ombor.objects.get(user=request.user)
+            ser.save(ombor=o)
+        return Response(ser.data)
+class ClientApi(APIView):
+    def get(self, request, pk):
+        o = Ombor.objects.get(user=request.user)
+        c=Client.objects.get(id=pk,ombor=o)
+        ser=ClientSer(c)
+        return Response(ser.data)
+    def put(self, request,pk):
+        o = Ombor.objects.get(username=request.user)
+        client = Client.objects.get(id=pk)
+        if client.ombor == o:
+            malumot = request.data
+            ser = MahsulotSer(data=malumot)
             if ser.is_valid():
-                ser.save()
+                ser.save(ombor=o)
             return Response(ser.data)
-        return Response()
-class ClientV(generics.RetrieveUpdateDestroyAPIView):
-    queryset = Client.objects.all()
-    serializer_class =ClientSer
-    def retrieve(self, request, pk):
-        o = Ombor.objects.get(user=self.request.user)
-        if o.user==self.request.user:
-            Client.objects.get(id=pk)
-        else:
-            return Response()
-    def update(self, request,pk):
-        o = Ombor.objects.get(user=self.request.user)
-        if o.user==self.request.user:
-            c=Client.objects.get(id=pk).update()
-            serializer = ClientSer(c,data=self.request.data)
-            if serializer.is_valid():
-                serializer.save()
-            return Response(serializer.data)
         return Response()

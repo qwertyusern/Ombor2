@@ -26,7 +26,7 @@ class MahsulotApi(APIView):
         mahsulot = Mahsulot.objects.get(id=pk)
         if mahsulot.ombor == o:
             malumot=request.data
-            ser = MahsulotSer(data=malumot)
+            ser = MahsulotSer(mahsulot,data=malumot)
             if ser.is_valid():
                 ser.save(ombor=o)
             return Response(ser.data)
@@ -55,7 +55,7 @@ class ClientApi(APIView):
         client = Client.objects.get(id=pk)
         if client.ombor == o:
             malumot = request.data
-            ser = MahsulotSer(data=malumot)
+            ser = ClientSer(client,data=malumot)
             if ser.is_valid():
                 ser.save(ombor=o)
             return Response(ser.data)

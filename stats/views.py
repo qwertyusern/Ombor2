@@ -33,7 +33,7 @@ class StatsApi(APIView):
         s=Stats.objects.get(id=pk)
         if s.ombor==o:
             malumot=request.data
-            ser = StatsSer(data=malumot)
+            ser = StatsSer(s,data=malumot)
             if ser.is_valid():
                 ser.save(ombor=o)
             return Response(ser.data)
